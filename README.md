@@ -45,6 +45,7 @@ After training, you can also use `synthesis.py`. This is a script for environmen
 ## References
 
 [1] 岡本 悠希，井本 桂右，高道 慎之介，福森 隆寛，山下 洋一，"Transformerを用いたオノマトペからの環境音合成，" 日本音響学会2021年秋季研究発表会，pp. 943-946.
+
 [2] Yuki Okamoto, Keisuke Imoto, Shinnosuke Takamichi, Takahiro Fukumori, and Yoichi Yamashita, "How Should We Evaluate Synthesized Environmental Sounds," arXiv:2208.07679 [Sound (cs.SD)].
 
 ```
