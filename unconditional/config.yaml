@@ -1,0 +1,115 @@
+RWCP_SSD:
+  root_dir: "/work/tamamori/onomato-wave/"
+  data_dir: "data/RWCP-SSD_Vol1/"  # RWCP-SSD_Vol1.zipを解凍したディレクトリ
+  wav_dir: "data/RWCP-SSD_Vol1_wav/"  # wavファイルの保存場所
+  model_dir: "model/"  # 訓練済モデルの保存場所
+  gen_dir: "gen_trans_uncond/"  # モデルから合成した音声ファイルの保存場所
+  log_dir: "log/"  # ログファイルの保存場所
+  stats_dir: "stats/"  # 正規化時の平均および標準偏差の保存場所
+  feats_dir: "feats/"  # 正規化時のスペクトログラムおよびメルスペクトログラムの保存場所
+  dict_dir: "dict/"  # 音素記号と通し番号間の相互変換辞書の保存場所
+  onoma_jpdir: "data/RWCPSSD_Onomatopoeia/RWCP_SSD_Onomatopoeia_jp/"
+  onoma_endir: "data/RWCPSSD_Onomatopoeia/RWCP_SSD_Onomatopoeia_en/"
+  onoma_traindir: "data/RWCPSSD_Onomatopoeia-train"  # 訓練用のcsvファイルたち
+  onoma_testdir: "data/RWCPSSD_Onomatopoeia-test"    # 推論用のcsvファイルたち
+
+sound_event:    # モデル化の対象となる音響イベント
+  - "bells5"   # c1/bells5
+  - "clock1"   # c5/clock1
+  - "coffmill" # c5/coffmill
+  - "cup1"     # a4/cup1
+  - "drum"     # c3/drum
+  - "maracas"  # c3/maracas
+  - "shaver"   # c5/shaver
+  - "tear"     # c2/tear
+  - "trashbox" # a2/trashbox
+  - "whistle3" # c3/whistle3
+
+test_basename:  # 000-099のうち、訓練から除外するwavファイルのbasename（拡張子なし）
+  - "000"
+  - "001"
+  - "002"
+  - "003"
+  - "004"
+
+feature:
+  sample_rate: 16000  # サンプリング周波数
+  n_fft: 2048  # FFTの窓長
+  win_length: 2048  # 分析窓長
+  hop_length: 512   # ホップ長
+  n_mels: 80   # メル周波数の次数
+  power: 1.0
+  min_clip: 0.0001  # スペクトログラムの最小値のクリッピング値
+  n_iter: 32  # Griffin-Lim アルゴリズムにおける繰り返し回数
+
+preprocess:
+  spec_file: "spec_list.pkl"  # 対数スペクトログラムの保存名
+  melspec_file: "melspec_list.pkl"  # 対数メルスペクトログラムの保存名
+
+model:
+  transformer:  # Transformerの設定
+    attention_dim: 512 # Transformer上の埋め込み次元
+    nhead: 4  # Multi-head attentionのhead数
+    num_encoder_layers: 3  # Transformer encoderの層数
+    num_decoder_layers: 3  # Transformer decoderの層数
+    dim_feedforward: 1536 # Position-wise feed-forward networkの次元数
+    norm_first: False  # LayerNormをResidual blockの前に行う(True)か否か(False)
+    dropout: 0.1
+  positional_encoding:
+    dropout: 0.1
+  enc_prenet:  # Encoder prenetの設定
+    emb_size: 512
+    conv_channels: 512
+    kernel_size: 3
+    n_layers: 0
+    dropout: 0.5
+  dec_prenet:  # Decoder prenetの設定
+    n_units: 512
+    n_layers: 2
+    dropout: 0.5
+  postnet:     # メルスペクトログラムをrefineするPostNetの設定
+    conv_channels: 512
+    kernel_size: 5
+    n_layers: 5
+    dropout: 0.5
+  cbhg:  # メルスペクトログラムをスペクトログラムに変換するCBHGの設定
+    n_convbanks: 8
+    n_highways: 4
+    proj_dim: 512
+
+training:
+  n_onomas: 15  # 1つのオーディオに対して用いるオノマトペの数（訓練時）
+  padvalue_spec: 0.0  # ミニバッチ構成時にスペクトログラムにパディングする値（訓練時）
+  model_prefix: "seq2seq_trans_release"  # モデルファイル名の先頭につける識別子
+  scaler_file: "stats_dsp.pkl"  # standard scalerの保存名 (linear spectrogram)
+  mapping_dict: "mapping_dict.pkl"  # 音素表現と数値表現を相互変換する辞書ファイル
+  fit:  # 各モデルの訓練を行うかどうか
+    transformer: True
+    mel2linear: True
+  n_epoch:  # 各モデルの訓練回数
+    transformer: 1500
+    mel2linear: 1000
+  n_batch: 32    # ミニバッチサイズ
+  learning_rate: # 学習率
+    transformer: 0.0003   # 学習率の上限
+    mel2linear: 0.0001
+  use_grad_clip: True # 勾配クリッピングを行うかどうか
+  grad_max_norm: 1.0  # 勾配クリッピング値
+  use_scheduler: True  # 学習率調整のスケジューラを使うかどうか
+  warmup_epochs: 300  # warm-upに必要なエポック数 (TransformerLR)
+  gamma: 0.5    # 学習率の変更率 (MultiStepLR)
+  milestones: # 学習率の変更タイミング (MultiStepLR)
+    - 500
+
+inference:
+  n_onomas: 2  # オーディオ1つの生成に対して オノマトペを何通り試すか
+
+demo:
+  onomatopoeia: "p i i q"
+  sound_event: "whistle3"
+  basename: "demo_trans_uncond_"
+  gen_dir: "demo_gen_trans_uncond/"
+  n_frame: 40  # 合成音のフレーム数 ←秒を見積もるには hop_length(512)を掛けて16000で割る
+  checkpoint:
+    transformer: "pretrained_uncond_transformer.pt"
+    mel2linear: "pretrained_uncond_mel2linear.pt"
