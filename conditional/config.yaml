@@ -76,9 +76,9 @@ model:
     n_convbanks: 8
     n_highways: 4
     proj_dim: 512
-  embed_event:
-    memory: True
-    decoder: False
+  embed_event:  # 音響イベントラベルを埋め込む方法
+    memory: True  # エンコーダ出力に埋め込む(True)か否か(False)
+    decoder: False # デコーダ入力に埋め込む(True)か否か(False)
 
 training:
   n_onomas: 15  # 1つのオーディオに対して用いるオノマトペの数（訓練時）
