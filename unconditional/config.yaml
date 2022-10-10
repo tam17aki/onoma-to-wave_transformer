@@ -107,7 +107,7 @@ inference:
 demo:
   onomatopoeia: "p i i q"
   sound_event: "whistle3"
-  basename: "demo_trans_uncond_"
+  basename: "demo_trans_uncond"
   gen_dir: "demo_gen_trans_uncond/"
   n_frame: 40  # 合成音のフレーム数 ←秒を見積もるには hop_length(512)を掛けて16000で割る
   checkpoint:
