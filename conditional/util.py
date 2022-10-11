@@ -206,6 +206,9 @@ def make_nonpad_mask(lengths, maxlen=None):
 
     Returns:
         mask (BoolTensor): maks of non-padding frames [batch_size, max_len, 1]
+        
+    Copyright (C) 2021 by Ryuichi Yamamoto
+    MIT License.
     """
     return ~make_pad_mask(lengths, maxlen)
 
