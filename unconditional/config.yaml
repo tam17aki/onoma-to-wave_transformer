@@ -80,7 +80,7 @@ model:
 training:
   n_onomas: 15  # 1つのオーディオに対して用いるオノマトペの数（訓練時）
   padvalue_spec: 0.0  # ミニバッチ構成時にスペクトログラムにパディングする値（訓練時）
-  model_prefix: "seq2seq_trans_release"  # モデルファイル名の先頭につける識別子
+  model_prefix: "seq2seq_trans_uncond"  # モデルファイル名の先頭につける識別子
   scaler_file: "stats_dsp.pkl"  # standard scalerの保存名 (linear spectrogram)
   mapping_dict: "mapping_dict.pkl"  # 音素表現と数値表現を相互変換する辞書ファイル
   fit:  # 各モデルの訓練を行うかどうか
