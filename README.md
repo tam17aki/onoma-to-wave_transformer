@@ -10,7 +10,7 @@ Copyright (C) 2022 Akira Tamamori
 We tested the implemention on Ubuntu 22.04. The verion of Python was `3.10.6`. The following modules are required:
 
 - torch
-- hydra
+- hydra-core
 - progressbar2
 - pandas
 - soundfile
