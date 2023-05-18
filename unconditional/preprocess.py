@@ -191,11 +191,11 @@ def make_csv(cfg: DictConfig):
 
             if any(x in jp_path for x in cfg.test_basename):
                 output_path = jp_path.replace(
-                    dir_info["jp_dir"], dir_info["test_dir"]
+                    os.path.dirname(dir_info["jp_dir"]), dir_info["test_dir"]
                 ).replace(".ono", ".csv")
             else:
                 output_path = jp_path.replace(
-                    dir_info["jp_dir"], dir_info["train_dir"]
+                    os.path.dirname(dir_info["jp_dir"]), dir_info["train_dir"]
                 ).replace(".ono", ".csv")
 
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
