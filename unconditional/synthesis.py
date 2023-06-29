@@ -74,7 +74,7 @@ class Synthesizer(nn.Module):
         batch_size = source.shape[0]  # assumed to be 1
         masks = init_mask()
         memory = self.model["transformer"].encode(source, masks)
-        target = torch.ones((batch_size, 1, n_mels), device=device)
+        target = torch.zeros((batch_size, 1, n_mels), device=device)
         for _ in range(n_frame):
             masks["tgt_mask"] = make_square_subsequent_mask(target.shape[1]).to(device)
             decoded = self.model["transformer"].decode(target, memory, masks)
